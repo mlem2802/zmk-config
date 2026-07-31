@@ -180,13 +180,13 @@ void matrix_scan_user(void) {
   if (old_layer != new_layer) {
     switch (new_layer) {
       case STANDARD:
-        RGB_COLOR_HSB(360, 100, 100);
+        RGB_COLOR_HSB(360, 100, 20);
         break;
       case UTILITY:
-        RGB_COLOR_HSB(200, 100, 100);
+        RGB_COLOR_HSB(200, 100, 20);
         break;
       case LIGHTING:
-        rgblight_setrgb(0, 100, 100);
+        rgblight_setrgb(0, 100, 20);
         break;
     }
 
