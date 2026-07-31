@@ -12,13 +12,9 @@
 
 // Layer IDs
 
-#define WINDOWS 0
-#define WINDOWS_FN   1
-#define MAC   2
-#define MAC_FN   3
-#define GALLIUM 4
-#define GALLIUM_FN  5
-#define UTILS 6
+#define STANDARD 0
+#define UTILITY 1
+#define LIGHTING 2
 
 &mmv_input_listener { input-processors = <&zip_xy_scaler 2 1>; };
 
@@ -40,23 +36,6 @@
 
 / {
     behaviors {
-        winfn_mt: momentary_or_toggle_win_fn {
-            // If held, momentary switch to layer 1 or double tap to toggle layer 1
-
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            tapping-term-ms = <200>;
-            bindings = <&mo 1>, <&tog 1>;
-        };
-
-        macfn_mt: momentary_or_toggle_mac_fn {
-            // If held, momentary switch to layer 3 or double tap to toggle layer 3
-
-            compatible = "zmk,behavior-tap-dance";
-            #binding-cells = <0>;
-            tapping-term-ms = <200>;
-            bindings = <&mo 0>, <&tog 0>;
-        };
 
         Tap_Dance: Tap_Dance {
             compatible = "zmk,behavior-tap-dance";
