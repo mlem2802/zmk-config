@@ -11,9 +11,13 @@
 #include <dt-bindings/zmk/rgb.h>
 
 // Layer IDs
-#define STANDARD 0
-#define UTILITY  1
-#define LIGHTING 2
+#define WINDOWS 0
+#define WINDOWS_FN   1
+#define MAC   2
+#define MAC_FN   3
+#define GALLIUM 4
+#define GALLIUM_FN  5
+#define UTILS 6
 
 &mmv_input_listener { input-processors = <&zip_xy_scaler 2 1>; };
 
@@ -33,7 +37,7 @@
 
 &soft_off { hold-time-ms = <2000>; };
 
-{
+/ {
     scroll_encoder: scroll_encoder {
         compatible = "zmk,behavior-sensor-rotate";
         #sensor-binding-cells = <0>;
@@ -42,26 +46,76 @@
         tap-ms = <100>;
     };
 
-{
     behaviors {
-        td0: tap_dance_0 {
+        winfn_mt: momentary_or_toggle_win_fn {
+            // If held, momentary switch to layer 1 or double tap to toggle layer 1
             compatible = "zmk,behavior-tap-dance";
             #binding-cells = <0>;
             tapping-term-ms = <200>;
-            bindings = <&zip_temp_layer 1>;
+            bindings = <&mo WINDOWS_FN>, <&tog WINDOWS_FN>;
+        };
+
+        macfn_mt: momentary_or_toggle_mac_fn {
+            // If held, momentary switch to layer 3 or double tap to toggle layer 3
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&mo MAC_FN>, <&tog MAC_FN>;
         };
     };
 
-    keymap {
-        compatible = "zmk,keymap";
+    combos {
+        compatible = "zmk,combos";
 
-        default_layer {
-            bindings = <
-                &td0
-            >;
+        softoff {
+            bindings = <&soft_off>;
+            key-positions = <14 28 40>; // Keys Q, S, Z
         };
     };
-};
+
+    macros {
+        snap_win: snapshot_win {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_press>,
+                <&kp LEFT_WIN &kp LEFT_SHIFT>,
+                <&macro_tap>,
+                <&kp S>,
+                <&macro_release>,
+                <&kp LEFT_COMMAND &kp LEFT_SHIFT>;
+
+            label = "SNAPSHOT_WIN";
+        };
+
+        snap_mac_clip: snapshot_mac_clip {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_press>,
+                <&kp LEFT_COMMAND &kp LEFT_CONTROL &kp LEFT_SHIFT>,
+                <&macro_tap>,
+                <&kp NUMBER_4>,
+                <&macro_release>,
+                <&kp LEFT_COMMAND &kp LEFT_CONTROL &kp LEFT_SHIFT>;
+
+            label = "SNAPSHOT_MAC_CLIP";
+        };
+
+        snap_mac_file: snapshot_mac_file {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings =
+                <&macro_press>,
+                <&kp LEFT_COMMAND &kp LEFT_SHIFT>,
+                <&macro_tap>,
+                <&kp NUMBER_4>,
+                <&macro_release>,
+                <&kp LEFT_COMMAND &kp LEFT_SHIFT>;
+
+            label = "SNAPSHOT_MAC_FILE";
+        };
+    };
 
 // Bottom left key is the encoder click
 // Column 7 (middle column) is the joystick from the right half
@@ -69,22 +123,22 @@
     keymap {
         compatible = "zmk,keymap";
 //
-// STANDARD layout
+// Windows layout
 //
-        standard {
+        windows {
             bindings = <
 &kp ESC     &kp N1        &kp N2       &kp N3        &kp N4         &kp N5               &kp UP                 &kp N6     &kp N7         &kp N8         &kp N9        &kp N0          &kp BSPC
 &kp TAB     &kp Q         &kp W        &kp E         &kp R          &kp T                &kp DOWN               &kp Y      &kp U          &kp I          &kp O         &kp P           &kp BSLH
 &kp GRAVE   &kp A         &kp S        &kp D         &kp F          &kp G                &kp LEFT               &kp H      &kp J          &kp K          &kp L         &kp SEMI        &kp APOS
-&kp LCTRL   &kp Z         &kp X        &kp C         &kp V          &kp B                &kp RIGHT              &kp N      &kp M          &kp COMMA      &kp DOT       &kp FSLH        &kp ENTER
-&kp C_MUTE                &kp LSHIFT    &kp LGUI      &kp LALT      &zip_temp_layer 1    &kp SPACE              &kp LEFT   &kp DOWN       &kp RIGHT      &kp UP        &kp DEL
+&kp LSHFT   &kp Z         &kp X        &kp C         &kp V          &kp B                &kp RIGHT              &kp N      &kp M          &kp COMMA      &kp DOT       &kp FSLH        &kp RSHIFT
+&kp C_MUTE                &kp LCTRL    &kp LGUI      &kp LALT       &winfn_mt  &kp BSPC  &kp ENTER  &kp SPACE   &kp ENTER  &mo UTILS      &kp RIGHT_ALT  &snap_win
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOL_DN>;
-            display-name = "STANDARD";
+            display-name = "Windows";
         };
 
-        Utility {
+        windows_fn {
             bindings = <
 &to MAC     &kp F1           &kp F2          &kp F3           &kp F4           &kp F5                   &mmv MOVE_UP               &kp F6           &kp F7        &kp F8         &kp F9         &kp F10       &trans
 &trans      &none            &kp UP          &mkp LCLK        &mkp MCLK        &mkp RCLK                &mmv MOVE_DOWN             &kp PG_UP        &kp LC(LEFT)  &kp UP         &kp LC(RIGHT)  &kp MINUS     &kp EQUAL
@@ -93,47 +147,79 @@
 &kp C_MUTE                   &trans          &trans           &trans           &trans          &trans   &mkp LCLK        &trans    &trans           &trans        &trans         &trans
             >;
 
-            display-name = "UTILITY";
+            display-name = "Win Fn";
             sensor-bindings = <&scroll_encoder>;
         };
 //
-// LIGHTING layout
+// Mac layout
 //
-        lighting {
+        mac {
             bindings = <
-&trans     &trans           &trans           &trans            &trans             &trans                      &trans             &trans           &trans          &trans          &trans            &trans             &trans
-&trans     &trans           &trans           &trans            &trans             &trans                      &trans             &trans           &trans          &trans          &trans            &trans             &trans
-&trans     &trans           &trans           &trans            &trans             &trans                      &trans             &trans           &trans          &trans          &trans            &trans             &trans
-&trans     &trans           &trans           &trans            &trans             &trans                      &trans             &trans           &trans          &trans          &trans            &trans             &trans
+&kp ESC     &kp N1          &kp N2          &kp N3           &kp N4            &kp N5                     &kp UP_ARROW               &kp N6          &kp N7         &kp N8         &kp N9           &kp N0            &kp BACKSPACE
+&kp TAB     &kp Q           &kp W           &kp E            &kp R             &kp T                      &kp DOWN_ARROW             &kp Y           &kp U          &kp I          &kp O            &kp P             &kp BSLH
+&kp GRAVE   &kp A           &kp S           &kp D            &kp F             &kp G                      &kp LEFT_ARROW             &kp H           &kp J          &kp K          &kp L            &kp SEMI          &kp APOS
+&kp LSHFT   &kp Z           &kp X           &kp C            &kp V             &kp B                      &kp RIGHT_ARROW            &kp N           &kp M          &kp COMMA      &kp DOT          &kp FSLH          &kp RIGHT_SHIFT
+&kp C_MUTE                  &kp LCTRL       &kp LEFT_ALT     &kp LEFT_GUI      &macfn_mt   &kp BACKSPACE  &kp ENTER       &kp SPACE  &kp ENTER       &mo UTILS          &kp RIGHT_ALT  &snap_mac_clip
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOL_DN>;
-            display-name = "LIGHTING";
+            display-name = "Mac";
         };
-void matrix_scan_user(void) {
-  #ifdef RGBLIGHT_ENABLE
 
-  static uint8_t old_layer = 255;
-  uint8_t new_layer = biton32(layer_state);
+        mac_fn {
+            bindings = <
+&to WINDOWS &kp F1           &kp F2          &kp F3           &kp F4           &kp F5                   &mmv MOVE_UP               &kp F6           &kp F7        &kp F8         &kp F9           &kp F10           &trans
+&trans      &none            &kp UP          &mkp LCLK        &mkp MCLK        &mkp RCLK                &mmv MOVE_DOWN             &kp PG_UP        &kp LC(LEFT)  &kp UP         &kp LC(RIGHT)    &kp MINUS         &kp EQUAL
+&trans      &kp LEFT         &kp DOWN        &kp RIGHT        &none            &mkp MB5                 &mmv MOVE_LEFT             &kp PG_DN        &kp LEFT      &kp DOWN       &kp RIGHT        &kp LEFT_BRACKET  &kp RIGHT_BRACKET
+&trans      &none            &none           &none            &none            &none                    &mmv MOVE_RIGHT            &none            &kp HOME      &kp END        &kp C_VOL_DN     &kp C_VOL_UP      &trans
+&kp C_MUTE                   &trans          &trans           &trans           &trans          &trans   &mkp LCLK        &trans    &trans           &trans        &trans         &snap_mac_file
+            >;
 
-  if (old_layer != new_layer) {
-    switch (new_layer) {
-      case STANDARD:
-        &rgb_ug RGB_COLOR_HSB(255,100,100);
-        break;
-      case UTILITY:
-        rgb_ug RGB_COLOR_HSB(128,100,100);
-        break;
-      case LIGHTING:
-        rgb_ug RGB_COLOR_HSB(200,100,100);
-        break;
-    }
+            display-name = "Mac Fn";
+            sensor-bindings = <&scroll_encoder>;
+        };
 
-    old_layer = new_layer;
-  }
+//
+// Gallium layout for Windows
+//
+        gallium {
+            bindings = <
+&kp ESC     &kp N1          &kp N2           &kp N3          &kp N4            &kp N5                    &kp UP_ARROW                &kp N6          &kp N7         &kp N8         &kp N9        &kp N0            &kp BACKSPACE
+&kp TAB     &kp B           &kp L            &kp D           &kp C             &kp V                     &kp DOWN_ARROW              &kp J           &kp Y          &kp O          &kp U         &kp COMMA         &kp BSLH
+&kp GRAVE   &kp N           &kp R            &kp T           &kp S             &kp G                     &kp LEFT_ARROW              &kp P           &kp H          &kp A          &kp E         &kp I             &kp FSLH
+&kp LSHFT   &kp X           &kp Q            &kp M           &kp W             &kp Z                     &kp RIGHT_ARROW             &kp K           &kp F          &kp APOS       &kp SEMI      &kp DOT           &kp RIGHT_SHIFT
+&kp C_MUTE                  &kp LCTRL        &kp LEFT_GUI    &kp LEFT_ALT      &mo GALLIUM_FN  &kp BACKSPACE  &kp ENTER       &kp SPACE   &kp ENTER       &mo UTILS          &kp RIGHT_ALT  &snap_win
+            >;
 
-  #endif //RGBLIGHT_ENABLE
-}
+            sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOL_DN>;
+            display-name = "Gallium";
+        };
+
+        gallium_fn {
+            bindings = <
+&to WINDOWS &kp F1           &kp F2          &kp F3           &kp F4           &kp F5                   &mmv MOVE_UP               &kp F6           &kp F7        &kp F8         &kp F9         &kp F10           &trans
+&trans      &none            &kp UP          &mkp LCLK        &mkp MCLK        &mkp RCLK                &mmv MOVE_DOWN             &kp PG_UP        &kp LC(LEFT)  &kp UP         &kp LC(RIGHT)  &kp MINUS         &kp EQUAL
+&trans      &kp LEFT         &kp DOWN        &kp RIGHT        &none            &mkp MB5                 &mmv MOVE_LEFT             &kp PG_DN        &kp LEFT      &kp DOWN       &kp RIGHT      &kp LEFT_BRACKET  &kp RIGHT_BRACKET
+&trans      &rgb_ug RGB_OFF  &rgb_ug RGB_ON  &rgb_ug RGB_EFF  &rgb_ug RGB_EFR  &rgb_ug RGB_SPI          &mmv MOVE_RIGHT            &rgb_ug RGB_BRI  &kp HOME      &kp END        &kp C_VOL_DN   &kp C_VOL_UP      &trans
+&kp C_MUTE                   &trans          &trans           &trans           &trans          &trans   &mkp LCLK        &trans    &trans           &trans        &trans         &trans
+            >;
+
+            sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOL_DN>;
+            display-name = "Gallium Fn";
+        };
+
+        utils {
+            bindings = <
+&to GALLIUM     &bt BT_SEL 0     &bt BT_SEL 1    &bt BT_SEL 2     &bt BT_SEL 3     &bt BT_SEL 4          &kp C_VOL_UP   &none             &none       &none       &kp F11    &kp F12      &kp DEL
+&trans          &bt BT_CLR       &bt BT_CLR_ALL  &none            &none            &none                 &kp C_VOL_DN   &none             &none       &kp PG_UP   &none      &kp UNDER    &kp PLUS
+&trans          &out OUT_USB     &out OUT_BLE    &rgb_ug RGB_EFF  &rgb_ug RGB_SPI  &rgb_ug RGB_BRI       &trans         &rgb_ug RGB_HUI   &kp HOME    &kp PG_DN   &kp END    &kp LBRC     &kp RBRC
+&trans          &rgb_ug RGB_OFF  &rgb_ug RGB_ON  &rgb_ug RGB_EFR  &rgb_ug RGB_SPD  &rgb_ug RGB_BRD       &trans         &rgb_ug RGB_HUD   &none       &none       &none      &none        &none
+&kp C_MUTE      &soft_off        &studio_unlock  &trans           &trans           &kp DEL               &kp C_MUTE     &trans            &trans      &trans      &trans     &trans
+            >;
+
+            display-name = "Utils";
+            sensor-bindings = <&scroll_encoder>;
+        };
 
     };
 };
