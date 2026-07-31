@@ -1,6 +1,8 @@
+#include <dt-bindings/zmk/rgb.h>
+
 layout: {zmk_keyboard: eyelash_sofle}
 layers:
-  Windows:
+  STANDARD:
   - $$mdi:keyboard-esc$$
   - {t: '1', s: '!'}
   - {t: '2', s: '@'}
@@ -40,7 +42,7 @@ layers:
   - L
   - {t: ;, s: ':'}
   - .
-  - $$mdi:apple-keyboard-shift$$
+  - $$mdi:apple-keyboard-caps$$
   - Z
   - X
   - C
@@ -52,34 +54,34 @@ layers:
   - {t: ',', s: <}
   - {t: ., s: '>'}
   - {t: /, s: '?'}
-  - $$mdi:apple-keyboard-shift$$
+  - $$mdi:apple-keyboard-enter$$
   - $$mdi:volume-off$$
-  - $$mdi:apple-keyboard-control$$
-  - LGUI
-  - $$mdi:apple-keyboard-option$$
-  - '&winfn_mt'
-  - {t: '$$mdi:backspace$$', type: backspace}
-  - {t: '$$mdi:keyboard-return$$', type: enter}
+  - $$mdi:apple-keyboard-shift$$
+  - LWIN
+  - $$mdi:apple-keyboard-alt$$
+  - '&zip_temp_layer'
   - $$mdi:keyboard-space$$
   - {t: '$$mdi:keyboard-return$$', type: enter}
-  - Utils
-  - RIGHT ALT
-  - '&snap_win'
-  Win Fn:
-  - {t: Mac, h: toggle}
-  - F1
-  - F2
-  - F3
-  - F4
-  - F5
-  - '&mmv MOVE_UP'
-  - F6
-  - F7
-  - F8
-  - F9
-  - F10
-  - {t: '$$mdi:transfer$$', type: trans}
-  - {t: '$$mdi:transfer$$', type: trans}
+  - $$mdi:arrow-left-bold$$
+  - $$mdi:arrow-down-bold$$
+  - $$mdi:arrow-right-bold$$
+  - $$mdi:arrow-up-bold$$
+  - DEL
+  UTILITY:
+  - BT_CLR_ALL
+  - BT_SEL 0
+  - BT_SEL 1
+  - BT_SEL 2
+  - BT_SEL 3
+  - BT_SEL 4
+  - {t: '$$mdi:minus-circle-outline$$', type: none}
+  - {t: '$$mdi:minus-circle-outline$$', type: none}
+  - {t: '$$mdi:minus-circle-outline$$', type: none}
+  - {t: '$$mdi:minus-circle-outline$$', type: none}
+  - {t: '$$mdi:minus-circle-outline$$', type: none}
+  - {t: '$$mdi:minus-circle-outline$$', type: none}
+  - {t: '$$mdi:minus-circle-outline$$', type: none}
+  - {t: '$$mdi:minus-circle-outline$$', type: none}
   - {t: '$$mdi:minus-circle-outline$$', type: none}
   - $$mdi:arrow-up-bold$$
   - '&mkp LCLK'
