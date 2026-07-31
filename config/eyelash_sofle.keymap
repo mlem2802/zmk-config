@@ -42,7 +42,7 @@
             #binding-cells = <0>;
             bindings = <&mo 1>, <&mo 2>;
 
-            tapping-term-ms = <500>;
+            tapping-term-ms = <200>;
         };
     };
 
