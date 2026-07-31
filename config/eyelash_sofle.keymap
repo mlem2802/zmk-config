@@ -110,10 +110,6 @@
     keymap {
         compatible = "zmk,keymap";
 
-        //
-        // Windows layout
-        //
-
         STANDARD {
             bindings = <
 &kp ESC    &kp N1          &kp N2    &kp N3    &kp N4      &kp N5       &trans  &kp N6    &kp N7    &kp N8     &kp N9        &kp N0    &kp BSPC
@@ -138,10 +134,6 @@
             display-name = "UTILITY";
         };
 
-        //
-        // Mac layout
-        //
-
         LIGHTING {
             bindings = <
 &trans           &trans           &trans           &trans           &trans           &trans    &trans  &trans      &trans      &trans      &trans        &trans  &trans
@@ -153,45 +145,5 @@
 
             display-name = "LIGHTING";
         };
-
-        //
-        // Gallium layout for Windows
-        //
     };
 };
-
-void persistent_default_layer_set(uint16_t default_layer) {
-  eeconfig_update_default_layer(default_layer);
-  default_layer_set(default_layer);
-}
-
-void matrix_init_user(void) {
-
-
-  rgblight_enable();
-}
-
-void matrix_scan_user(void) {
-  #ifdef RGBLIGHT_ENABLE
-
-  static uint8_t old_layer = 255;
-  uint8_t new_layer = biton32(layer_state);
-
-  if (old_layer != new_layer) {
-    switch (new_layer) {
-      case STANDARD:
-        RGB_COLOR_HSB(360, 100, 20);
-        break;
-      case UTILITY:
-        RGB_COLOR_HSB(200, 100, 20);
-        break;
-      case LIGHTING:
-        rgblight_setrgb(0, 100, 20);
-        break;
-    }
-
-    old_layer = new_layer;
-  }
-
-  #endif //RGBLIGHT_ENABLE
-}
